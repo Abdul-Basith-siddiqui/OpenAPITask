@@ -10,7 +10,8 @@ PETSTORE_URL = 'https://petstore.swagger.io/v2/swagger.json'
 
 ![image](https://github.com/user-attachments/assets/9526bdb9-4bba-4eac-859a-d0159fb815ff)
 
-![image](https://github.com/user-attachments/assets/89230b00-957c-4886-bfb0-0b4778e2da40)
+![image](https://github.com/user-attachments/assets/2d5a82ef-1d0c-465c-aca4-0b87ddee2c4f)
+
 
 
 ## Features
