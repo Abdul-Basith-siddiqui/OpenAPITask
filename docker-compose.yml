@@ -1,3 +1,23 @@
+# version: "3.8"
+
+# services:
+#   backend:
+#     build: ./backend
+#     ports:
+#       - "3000:3000"
+#     environment:
+#       - PORT=3000
+
+#   frontend:
+#     build: ./frontend
+#     ports:
+#       - "5173:5173"
+#     environment:
+#       - VITE_REACT_API_BACKEND_URL=http://localhost:3000
+#     depends_on:
+#       - backend
+
+
 version: "3.8"
 
 services:
@@ -6,7 +26,10 @@ services:
     ports:
       - "3000:3000"
     environment:
+      - MONGO_URI=mongodb://mongodb:27017/logDB  # Use MongoDB service name here
       - PORT=3000
+    depends_on:
+      - mongodb
 
   frontend:
     build: ./frontend
@@ -16,3 +39,11 @@ services:
       - VITE_REACT_API_BACKEND_URL=http://localhost:3000
     depends_on:
       - backend
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/db:/data/db  # Persist MongoDB data locally

@@ -13,7 +13,10 @@ app.use(cors());
 app.use(express.json());
 connectDB();
 app.use("/", routes);
-
+app.get('/testApi', (req, res) => {
+  res.send('Hello World!');
+});
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+
