@@ -22,10 +22,10 @@ const Report: React.FC = () => {
   const [summary, setSummary] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const backendUrl = import.meta.env.VITE_REACT_API_BACKEND_URL;
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/getLogs`)
+      .get(`${backendUrl}/getLogs`)
       .then((response) => {
         const endpoints = response.data?.log?.endpoints || [];
         const parsedLogs = endpoints.map((log: any) => ({
@@ -70,81 +70,8 @@ const Report: React.FC = () => {
         Logs Report - Status Code Summary
       </h2>
 
-      {/* Display Summary */}
-      {/* {Object.keys(summary).length > 0 ? (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-300 rounded-md shadow-md">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="px-4 py-2 text-left">Status Code</th>
-                <th className="px-4 py-2 text-left">Frequency</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(summary).map(([statusCode, frequency], index) => (
-                <tr key={index} className="border-t">
-                  <td className="px-4 py-2 whitespace-nowrap">{statusCode}</td>
-                  <td className="px-4 py-2">{frequency}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <p className="mt-2">No logs available for status code summary.</p>
-      )} */}
-
       {Object.keys(summary).length > 0 ? (
         <div>
-          {/* Overall Summary */}
-          {/* <div className="mb-4 flex gap-2">
-            <p>
-              <strong>Total Endpoints: </strong>
-              {Object.keys(summary).length}
-            </p>
-            <p>
-              <strong>Success: </strong>
-              {Object.entries(summary).reduce(
-                (acc, [statusCode, frequency]) => {
-                  if (statusCode.startsWith("2")) acc += frequency; // Add frequency of success codes (2xx)
-                  return acc;
-                },
-                0
-              )}
-            </p>
-            <p>
-              <strong>Failed: </strong>
-              {Object.entries(summary).reduce(
-                (acc, [statusCode, frequency]) => {
-                  if (statusCode.startsWith("4") || statusCode.startsWith("5"))
-                    acc += frequency; // Add frequency of failed codes (4xx, 5xx)
-                  return acc;
-                },
-                0
-              )}
-            </p>
-            <p>
-              <strong>Overall Success Rate: </strong>
-              {(
-                (Object.entries(summary).reduce(
-                  (acc, [statusCode, frequency]) => {
-                    if (statusCode.startsWith("2")) {
-                      return acc + frequency; // Sum the frequencies for success codes (2xx)
-                    }
-                    return acc;
-                  },
-                  0
-                ) /
-                  Object.entries(summary).reduce(
-                    (acc, [, frequency]) => acc + frequency,
-                    0
-                  )) *
-                100
-              ).toFixed(2)}
-              %
-            </p>
-          </div> */}
-
           <div className="mb-6 p-4 bg-white shadow-lg rounded-lg border border-gray-200">
             <h2 className="text-xl font-semibold mb-1">Endpoint Summary</h2>
 

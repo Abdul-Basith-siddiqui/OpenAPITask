@@ -23,9 +23,11 @@ const Home: React.FC = () => {
     }
 
     setLoading(true);
-    setError(null); // Clear previous errors
+    setError(null);
+
+    const backendUrl = import.meta.env.VITE_REACT_API_BACKEND_URL;
     try {
-      const response = await axios.post(`http://localhost:3000/parse-oas`, {
+      const response = await axios.post(`${backendUrl}/parse-oas`, {
         oasUrl: oasUrl,
       });
       console.log("Response:", response.data);

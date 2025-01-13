@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from '../services/api';
+import React, { useEffect, useState } from "react";
+import axios from "../services/api";
 
 const LogViewer: React.FC = () => {
   const [logs, setLogs] = useState<any[]>([]);
@@ -7,17 +7,18 @@ const LogViewer: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedLog, setSelectedLog] = useState<any | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const backendUrl = import.meta.env.VITE_REACT_API_BACKEND_URL;
 
   useEffect(() => {
     axios
-    .get(`http://localhost:3000/getLogs`)
+      .get(`${backendUrl}/getLogs`)
       .then((response: any) => {
         const endpoints = response.data?.log?.endpoints || [];
         setLogs(endpoints);
         setLoading(false);
       })
       .catch(() => {
-        setError('Failed to fetch logs.');
+        setError("Failed to fetch logs.");
         setLoading(false);
       });
   }, []);
@@ -90,26 +91,26 @@ const LogViewer: React.FC = () => {
                   <td
                     className={`border border-gray-300 px-4 py-2 text-sm ${
                       log.status >= 200 && log.status < 300
-                        ? 'text-green-600'
-                        : 'text-red-600'
+                        ? "text-green-600"
+                        : "text-red-600"
                     }`}
                   >
                     {log.status}
                   </td>
                   <td className="border border-gray-300 px-4 py-2 text-sm max-w-[200px]">
-  <pre className="text-xs bg-gray-100 p-2 rounded-md max-h-[120px] overflow-y-auto truncate">
-    {log.requestDetails?.body
-      ? JSON.stringify(log.requestDetails.body, null, 2)
-      : 'No Request Data'}
-  </pre>
-</td>
-<td className="border border-gray-300 px-4 py-2 text-sm max-w-[200px]">
-  <pre className="text-xs bg-gray-100 p-2 rounded-md max-h-[120px] overflow-y-auto truncate">
-    {log.response ? JSON.stringify(log.response, null, 2) : 'No Response Data'}
-  </pre>
-</td>
-
-
+                    <pre className="text-xs bg-gray-100 p-2 rounded-md max-h-[120px] overflow-y-auto truncate">
+                      {log.requestDetails?.body
+                        ? JSON.stringify(log.requestDetails.body, null, 2)
+                        : "No Request Data"}
+                    </pre>
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2 text-sm max-w-[200px]">
+                    <pre className="text-xs bg-gray-100 p-2 rounded-md max-h-[120px] overflow-y-auto truncate">
+                      {log.response
+                        ? JSON.stringify(log.response, null, 2)
+                        : "No Response Data"}
+                    </pre>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -142,8 +143,8 @@ const LogViewer: React.FC = () => {
               <p
                 className={
                   selectedLog.status >= 200 && selectedLog.status < 300
-                    ? 'text-green-600'
-                    : 'text-red-600'
+                    ? "text-green-600"
+                    : "text-red-600"
                 }
               >
                 {selectedLog.status}
