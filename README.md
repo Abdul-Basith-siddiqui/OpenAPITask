@@ -14,6 +14,7 @@ PETSTORE_URL = 'https://petstore.swagger.io/v2/swagger.json'
 
 
 
+
 ## Features
 
 - Parse OpenAPI Specification (OAS) file.
@@ -38,6 +39,7 @@ PETSTORE_URL = 'https://petstore.swagger.io/v2/swagger.json'
 
 ```bash
 git clone https://github.com/Abdul-Basith-siddiqui/OpenAPITask
+
 # Backend dependencies
 cd backend
 npm install
