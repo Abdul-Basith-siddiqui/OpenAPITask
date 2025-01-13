@@ -46,7 +46,7 @@ npm install
 npm start for backend
 
 # Frontend dependencies
-cd ../task_osa
+cd frontend
 npm install
 npm run dev for fronted
 ```
