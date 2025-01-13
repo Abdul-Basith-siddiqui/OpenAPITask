@@ -1,21 +1,26 @@
 # REST API Evaluator
 
 ## Project Overview
+
 A tool that parses an OpenAPI Specification (OAS) file, identifies GET and POST endpoints, generates dummy inputs for POST requests, executes those endpoints using Axios/cURL, and logs the responses in a structured JSON format. It also generates a summary report showing the success frequency of the responses.
 
 ---
 
+PETSTORE_URL = 'https://petstore.swagger.io/v2/swagger.json'
+
 ## Features
+
 - Parse OpenAPI Specification (OAS) file.
 - Identify and execute GET and POST endpoints.
 - Generate dummy inputs for POST requests.
 - Log requests, responses, and status codes in JSON format.
 - Summary report with success frequency statistics for each endpoint.
-- Error handling for invalid OAS files, unreachable endpoints, and unexpected responses.
+- Error handling for invalid OAS, unreachable endpoints, and unexpected responses.
 
 ---
 
 ## Requirements
+
 - Node.js (v14 or above)
 - npm (v6 or above)
 
@@ -23,11 +28,17 @@ A tool that parses an OpenAPI Specification (OAS) file, identifies GET and POST 
 
 ## Installation
 
-### 1. Clone the repository
+### Clone the repository
+
 ```bash
 git clone https://github.com/Abdul-Basith-siddiqui/OpenAPITask
-cd fronend and backend 
+# Backend dependencies
+cd backend
 npm install
-npm run dev for both will start the local server
+npm start for backend
 
-
+# Frontend dependencies
+cd ../task_osa
+npm install
+npm run dev for fronted
+```

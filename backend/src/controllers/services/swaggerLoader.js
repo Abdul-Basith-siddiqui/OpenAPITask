@@ -1,4 +1,3 @@
-// services/swaggerLoader.js
 import SwaggerParser from "swagger-parser";
 
 export async function loadSpec(specUrl) {

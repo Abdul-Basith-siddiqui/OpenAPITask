@@ -1,4 +1,3 @@
-// services/requestUtils.js
 import { faker } from "@faker-js/faker";
 import fs from "fs";
 
@@ -14,7 +13,10 @@ export function generateData(schema) {
 
     case "number":
     case "integer":
-      return faker.number.int({ min: schema.minimum || 0, max: schema.maximum || 10000 });
+      return faker.number.int({
+        min: schema.minimum || 0,
+        max: schema.maximum || 10000,
+      });
 
     case "file":
       return fs.createReadStream("./file.jpg");
@@ -27,7 +29,12 @@ export function generateData(schema) {
 
     case "object":
       if (schema.properties) {
-        return Object.fromEntries(Object.entries(schema.properties).map(([key, propSchema]) => [key, generateData(propSchema)]));
+        return Object.fromEntries(
+          Object.entries(schema.properties).map(([key, propSchema]) => [
+            key,
+            generateData(propSchema),
+          ])
+        );
       }
       return {};
 
@@ -45,7 +52,10 @@ export function processEndpointWithParams(endpoint, params) {
     const fullMatch = match[0];
     const paramName = match[1];
     if (params && params[paramName] !== undefined) {
-      processedEndpoint = processedEndpoint.replace(fullMatch, encodeURIComponent(params[paramName]));
+      processedEndpoint = processedEndpoint.replace(
+        fullMatch,
+        encodeURIComponent(params[paramName])
+      );
     } else {
       console.log(`Missing required parameter: ${paramName}`);
     }
