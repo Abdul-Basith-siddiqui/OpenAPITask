@@ -5,17 +5,18 @@ const LogViewer: React.FC = () => {
   const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedLog, setSelectedLog] = useState<any | null>(null);  // For storing the selected log for the dialog
-  const [isDialogOpen, setIsDialogOpen] = useState(false);  // To control the modal visibility
+  const [selectedLog, setSelectedLog] = useState<any | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     axios
-      .get('http://localhost:3000/getLogs')
+    .get(`http://localhost:3000/getLogs`)
       .then((response: any) => {
-        setLogs(response.data.logs[0]?.logs || []);
+        const endpoints = response.data?.log?.endpoints || [];
+        setLogs(endpoints);
         setLoading(false);
       })
-      .catch((err) => {
+      .catch(() => {
         setError('Failed to fetch logs.');
         setLoading(false);
       });
@@ -50,85 +51,115 @@ const LogViewer: React.FC = () => {
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">Logs</h2>
+
       {logs.length > 0 ? (
-        <div className="overflow-x-auto max-h-[500px]">
-          <table className="min-w-full border-collapse border border-gray-200">
+        <div className="overflow-x-auto">
+          <table className="w-full table-auto border-collapse border border-gray-200">
             <thead className="bg-gray-50">
               <tr className="text-left">
-                <th className="border border-gray-300 px-4 py-2 text-sm font-medium">Method</th>
-                <th className="border border-gray-300 px-4 py-2 text-sm font-medium">URL</th>
-                <th className="border border-gray-300 px-4 py-2 text-sm font-medium">Status</th>
-                <th className="border border-gray-300 px-4 py-2 text-sm font-medium">Request Data</th>
-                <th className="border border-gray-300 px-4 py-2 text-sm font-medium">Response Data</th>
+                <th className="border border-gray-300 px-4 py-2 text-sm font-medium w-24">
+                  Method
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-sm font-medium w-56">
+                  Endpoint
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-sm font-medium w-24">
+                  Status
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-sm font-medium w-64">
+                  Request Data
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-sm font-medium w-64">
+                  Response Data
+                </th>
               </tr>
             </thead>
             <tbody>
               {logs.map((log, index) => (
-                <tr key={index} className="hover:bg-gray-100 cursor-pointer" onClick={() => openDialog(log)}>
-                  <td className="border border-gray-300 px-4 py-2 text-sm h-[80px]">{log.method}</td>
-                  <td className="border border-gray-300 px-4 py-2 text-sm h-[80px]">{log.url}</td>
+                <tr
+                  key={index}
+                  className="hover:bg-gray-100 cursor-pointer h-16" // Fixed row height
+                  onClick={() => openDialog(log)}
+                >
+                  <td className="border border-gray-300 px-4 py-2 text-sm truncate">
+                    {log.method}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2 text-sm truncate max-w-[220px]">
+                    {log.endpoint}
+                  </td>
                   <td
-                    className={`border border-gray-300 px-4 py-2 text-sm h-[80px] ${
-                      log.statusCode >= 200 && log.statusCode < 300
+                    className={`border border-gray-300 px-4 py-2 text-sm ${
+                      log.status >= 200 && log.status < 300
                         ? 'text-green-600'
                         : 'text-red-600'
                     }`}
                   >
-                    {log.statusCode}
+                    {log.status}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2 text-sm h-[80px]">
-                    <div className="max-h-[80px] overflow-y-auto">
-                      <pre className="text-xs bg-gray-100 p-2 rounded-md">
-                        {JSON.stringify(log.requestData, null, 2)}
-                      </pre>
-                    </div>
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2 text-sm h-[80px] w-[250px]">
-                    <div className="max-h-[80px] overflow-y-auto">
-                      {log.responseData ? (
-                        <pre className="text-xs bg-gray-100 p-2 rounded-md">
-                          {JSON.stringify(log.responseData, null, 2)}
-                        </pre>
-                      ) : (
-                        'N/A'
-                      )}
-                    </div>
-                  </td>
+                  <td className="border border-gray-300 px-4 py-2 text-sm max-w-[200px]">
+  <pre className="text-xs bg-gray-100 p-2 rounded-md max-h-[120px] overflow-y-auto truncate">
+    {log.requestDetails?.body
+      ? JSON.stringify(log.requestDetails.body, null, 2)
+      : 'No Request Data'}
+  </pre>
+</td>
+<td className="border border-gray-300 px-4 py-2 text-sm max-w-[200px]">
+  <pre className="text-xs bg-gray-100 p-2 rounded-md max-h-[120px] overflow-y-auto truncate">
+    {log.response ? JSON.stringify(log.response, null, 2) : 'No Response Data'}
+  </pre>
+</td>
+
+
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       ) : (
-        <p className="text-gray-500 text-center mt-6">No logs available.</p>
+        <p className="text-gray-500 text-center mt-6">
+          <span>No logs available.</span>
+        </p>
       )}
 
-      {/* Modal/Dialog */}
       {isDialogOpen && selectedLog && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg w-[80%] max-w-4xl max-h-[80%] overflow-y-auto">
+        <div
+          className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="bg-white p-6 rounded-lg w-[90%] max-w-4xl max-h-[80%] overflow-y-auto">
             <h3 className="text-2xl font-semibold mb-4">Log Details</h3>
             <div>
               <p className="font-semibold">Method:</p>
               <p>{selectedLog.method}</p>
             </div>
             <div>
-              <p className="font-semibold">URL:</p>
-              <p>{selectedLog.url}</p>
+              <p className="font-semibold">Endpoint:</p>
+              <p>{selectedLog.endpoint}</p>
             </div>
             <div>
               <p className="font-semibold">Status:</p>
-              <p className={selectedLog.statusCode >= 200 && selectedLog.statusCode < 300 ? 'text-green-600' : 'text-red-600'}>
-                {selectedLog.statusCode}
+              <p
+                className={
+                  selectedLog.status >= 200 && selectedLog.status < 300
+                    ? 'text-green-600'
+                    : 'text-red-600'
+                }
+              >
+                {selectedLog.status}
               </p>
             </div>
             <div>
               <p className="font-semibold">Request Data:</p>
-              <pre className="bg-gray-100 p-2 rounded-md text-xs">{JSON.stringify(selectedLog.requestData, null, 2)}</pre>
+              <pre className="bg-gray-100 p-2 rounded-md text-xs">
+                {JSON.stringify(selectedLog.requestDetails?.body, null, 2)}
+              </pre>
             </div>
             <div>
               <p className="font-semibold">Response Data:</p>
-              <pre className="bg-gray-100 p-2 rounded-md text-xs">{JSON.stringify(selectedLog.responseData, null, 2)}</pre>
+              <pre className="bg-gray-100 p-2 rounded-md text-xs">
+                {JSON.stringify(selectedLog.response, null, 2)}
+              </pre>
             </div>
             <div className="mt-4 flex justify-end">
               <button

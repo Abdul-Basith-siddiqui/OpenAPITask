@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -5,44 +7,55 @@ interface Log {
   method: string;
   url: string;
   statusCode: number | null;
-  requestData?: object;
-  responseData?: object;
+  requestDetails: {
+    url: string;
+    parameters?: object;
+    body?: object;
+  };
+  responseData: {
+    code: number;
+    type: string;
+    message: string;
+  };
 }
 
 const Report: React.FC = () => {
   const [logs, setLogs] = useState<Log[]>([]);
-  const [summary, setSummary] = useState<any>({});
+  const [summary, setSummary] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetching logs from the API
     axios
-      .get('http://localhost:3000/getLogs')
-      .then((response: any) => {
-        setLogs(response.data.logs[0]?.logs || []);
+      .get(`http://localhost:3000/getLogs`)
+      .then((response) => {
+        console.log("response.data",response.data)
+        const endpoints = response.data?.log?.endpoints || [];
+        const parsedLogs = endpoints.map((log: any) => ({
+          method: log.method,
+          url: log.endpoint,
+          statusCode: log.status,
+          requestDetails: log.requestDetails || {},
+          responseData: log.response || {},
+        }));
+        setLogs(parsedLogs);
+        calculateSummary(parsedLogs);
         setLoading(false);
-        calculateSummary(response.data.logs[0]?.logs || []);
       })
-      .catch((err) => {
+      .catch(() => {
         setError('Failed to fetch logs.');
         setLoading(false);
       });
   }, []);
 
-  const calculateSummary = (logs: Log[]) => {
-    const statusSummary: any = {};
 
+  const calculateSummary = (logs: Log[]) => {
+    const statusSummary: Record<string, number> = {};
     logs.forEach((log) => {
-      const status = log.statusCode;
-      if (status && status >= 200 && status < 300) {
-        if (!statusSummary[status]) {
-          statusSummary[status] = 0;
-        }
-        statusSummary[status]++;
+      if (log.statusCode) {
+        statusSummary[log.statusCode] = (statusSummary[log.statusCode] || 0) + 1;
       }
     });
-
     setSummary(statusSummary);
   };
 
@@ -56,9 +69,9 @@ const Report: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-semibold mb-4">Logs Report - Successful Response Frequency</h2>
+      <h2 className="text-2xl font-semibold mb-4">Logs Report - Status Code Summary</h2>
 
-      {/* Display Summary of Successful Responses */}
+      {/* Display Summary */}
       {Object.keys(summary).length > 0 ? (
         <table className="min-w-full bg-white border border-gray-300 rounded-md shadow-md">
           <thead className="bg-gray-200">
@@ -68,16 +81,16 @@ const Report: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {Object.keys(summary).map((statusCode, index) => (
+            {Object.entries(summary).map(([statusCode, frequency], index) => (
               <tr key={index} className="border-t">
                 <td className="px-4 py-2">{statusCode}</td>
-                <td className="px-4 py-2">{summary[statusCode]}</td>
+                <td className="px-4 py-2">{frequency}</td>
               </tr>
             ))}
           </tbody>
         </table>
       ) : (
-        <p className="mt-2">No successful response data available.</p>
+        <p className="mt-2">No logs available for status code summary.</p>
       )}
 
       {/* Display Full Logs */}
@@ -88,6 +101,7 @@ const Report: React.FC = () => {
             <th className="px-4 py-2 text-left">Method</th>
             <th className="px-4 py-2 text-left">URL</th>
             <th className="px-4 py-2 text-left">Status Code</th>
+            <th className="px-4 py-2 text-left">Response Message</th>
           </tr>
         </thead>
         <tbody>
@@ -96,6 +110,7 @@ const Report: React.FC = () => {
               <td className="px-4 py-2">{log.method}</td>
               <td className="px-4 py-2">{log.url}</td>
               <td className="px-4 py-2">{log.statusCode}</td>
+              <td className="px-4 py-2">{log.responseData.message || 'N/A'}</td>
             </tr>
           ))}
         </tbody>

@@ -1,32 +1,75 @@
-import mongoose from 'mongoose';
+// import mongoose from 'mongoose';
 
-const logEntrySchema = new mongoose.Schema({
+// const logEntrySchema = new mongoose.Schema({
+//   method: {
+//     type: String,
+//     enum: ['get', 'post', 'put', 'delete', 'patch'],
+//   },
+//   url: {
+//     type: String,
+//   },
+//   requestData: {
+//     type: mongoose.Schema.Types.Mixed,
+//   },
+//   responseData: {
+//     type: mongoose.Schema.Types.Mixed,
+//   },
+//   statusCode: {
+//     type: Number,
+//   },
+//   createdAt: {
+//     type: Date,
+//     default: Date.now,
+//   },
+// });
+
+// const logSchema = new mongoose.Schema({
+//   logs: [logEntrySchema],
+// });
+
+// const Log = mongoose.model('Log', logSchema);
+// export default Log;
+
+import mongoose from "mongoose";
+
+const endpointLogSchema = new mongoose.Schema({
+  endpoint: {
+    type: String,
+    required: true,
+  },
   method: {
     type: String,
-    enum: ['get', 'post', 'put', 'delete', 'patch'], 
+    enum: ["get", "post", "put", "delete", "patch"],
+    required: true,
   },
-  url: {
-    type: String,
+  requestDetails: {
+    type: mongoose.Schema.Types.Mixed,
   },
-  requestData: {
-    type: mongoose.Schema.Types.Mixed, 
+  response: {
+    type: mongoose.Schema.Types.Mixed,
   },
-  responseData: {
-    type: mongoose.Schema.Types.Mixed, 
+  status: {
+    type: mongoose.Schema.Types.Mixed,
+    required: true,
   },
-  statusCode: {
-    type: Number, 
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now, 
+  success: {
+    type: Boolean,
+    required: true,
   },
 });
 
 const logSchema = new mongoose.Schema({
-  logs: [logEntrySchema], 
+  timestamp: {
+    type: Date,
+    required: true,
+    default: Date.now,
+  },
+  specification: {
+    type: String,
+    required: true,
+  },
+  endpoints: [endpointLogSchema],
 });
 
-
-const Log = mongoose.model('Log', logSchema);
+const Log = mongoose.model("Log", logSchema);
 export default Log;
