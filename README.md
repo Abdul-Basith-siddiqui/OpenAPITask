@@ -7,6 +7,7 @@ A tool that parses an OpenAPI Specification (OAS) file, identifies GET and POST 
 ---
 
 PETSTORE_URL = 'https://petstore.swagger.io/v2/swagger.json'
+![image](https://github.com/user-attachments/assets/9526bdb9-4bba-4eac-859a-d0159fb815ff)
 
 ## Features
 
