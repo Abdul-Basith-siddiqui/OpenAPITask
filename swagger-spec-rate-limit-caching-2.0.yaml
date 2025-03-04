@@ -1,0 +1,132 @@
+swagger: '2.0'
+info:
+  title: Random API
+  description: API with some random endpoints and custom headers
+  version: 1.0.0
+host: api.example.com
+basePath: /v1
+schemes:
+  - https
+paths:
+  /users:
+    get:
+      summary: Get all users
+      description: Returns a list of users
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful response
+          headers:
+            Cache-Control:
+              description: Cache control directives
+              type: string
+            ETag:
+              description: Entity tag for the response
+              type: string
+            Expires:
+              description: Expiration time of the response
+              type: string
+            Last-Modified:
+              description: Last modified date of the resource
+              type: string
+            Pragma:
+              description: Implementation-specific headers
+              type: string
+            X-RateLimit-Limit:
+              description: Maximum number of requests allowed
+              type: integer
+            X-RateLimit-Remaining:
+              description: Remaining number of allowed requests
+              type: integer
+            X-RateLimit-Reset:
+              description: Time until the rate limit resets
+              type: integer
+            Retry-After:
+              description: Time to wait before retrying
+              type: integer
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+  /users/{id}:
+    get:
+      summary: Get user by ID
+      description: Returns a specific user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            $ref: '#/definitions/User'
+  /posts:
+    post:
+      summary: Create a new post
+      description: Adds a new post to the system
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Post'
+      responses:
+        '201':
+          description: Post created successfully
+          headers:
+            Cache-Control:
+              description: Cache control directives
+              type: string
+            ETag:
+              description: Entity tag for the response
+              type: string
+            X-RateLimit-Limit:
+              description: Maximum number of requests allowed
+              type: integer
+            X-RateLimit-Remaining:
+              description: Remaining number of allowed requests
+              type: integer
+            X-RateLimit-Reset:
+              description: Time until the rate limit resets
+              type: integer
+            Retry-After:
+              description: Time to wait before retrying
+              type: integer
+          schema:
+            $ref: '#/definitions/Post'
+  /posts/{id}:
+    get:
+      summary: Get post by ID
+      description: Returns a specific post
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            $ref: '#/definitions/Post'
+definitions:
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+  Post:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+      body:
+        type: string
