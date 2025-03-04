@@ -1,0 +1,182 @@
+openapi: 3.0.0
+info:
+  title: Random API
+  description: API with some random endpoints and custom headers
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+    description: Production Server
+paths:
+  /users:
+    get:
+      summary: Get all users
+      description: Returns a list of users
+      responses:
+        '200':
+          description: Successful response
+          headers:
+            cache-control:
+              description: Cache control directives
+              schema:
+                type: string
+            etag:
+              description: Entity tag for the response
+              schema:
+                type: string
+            expires:
+              description: Expiration time of the response
+              schema:
+                type: string
+            last-modified:
+              description: Last modified date of the resource
+              schema:
+                type: string
+            pragma:
+              description: Implementation-specific headers
+              schema:
+                type: string
+            x-ratelimit-limit:
+              description: Maximum number of requests allowed
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: Remaining number of allowed requests
+              schema:
+                type: integer
+            x-ratelimit-reset:
+              description: Time until the rate limit resets
+              schema:
+                type: integer
+            retry-after:
+              description: Time to wait before retrying
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+  /users/{id}:
+    get:
+      summary: Get user by ID
+      description: Returns a specific user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+  /posts:
+    post:
+      summary: Create a new post
+      description: Adds a new post to the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                body:
+                  type: string
+      responses:
+        '201':
+          description: Post created successfully
+          headers:
+            cache-control:
+              description: Cache control directives
+              schema:
+                type: string
+            etag:
+              description: Entity tag for the response
+              schema:
+                type: string
+            x-ratelimit-limit:
+              description: Maximum number of requests allowed
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: Remaining number of allowed requests
+              schema:
+                type: integer
+            x-ratelimit-reset:
+              description: Time until the rate limit resets
+              schema:
+                type: integer
+            retry-after:
+              description: Time to wait before retrying
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  body:
+                    type: string
+  /posts/{id}:
+    get:
+      summary: Get post by ID
+      description: Returns a specific post
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  body:
+                    type: string
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        body:
+          type: string
